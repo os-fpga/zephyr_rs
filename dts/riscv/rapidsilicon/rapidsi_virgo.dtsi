@@ -41,13 +41,13 @@
 	};
 	
 	ocm: memory@0xA0300000 {
-		compatible = "rapidsi,ocm";
+		compatible = "rapidsi,mem";
 		device_type = "memory";
 		reg = <0xA0300000 DT_SIZE_K(64)>;
 	};
 	
 	ilm: ilm@0xA0200000 {
-		compatible = "rapidsi,ilm";
+		compatible = "rapidsi,mem";
 		device_type = "memory";
 		reg = <0xA0200000 DT_SIZE_K(64)>;
 	};
@@ -55,7 +55,6 @@
 	soc {
 		#address-cells = <1>;
 		#size-cells = <1>;
-		compatible = "rapidsi,soc";
 		ranges;
 
 		mtimer: timer@e6000000 {
@@ -85,6 +84,18 @@
 				#pin-cells = <4>;
 				pin-controller;
 				status = "okay";
+
+				ofe_default_pinmux {
+					compatible = "rapidsi,rigel";
+					group1 { 
+						pins = <&pinctrl 0 PIN_FN_ALT PIN_PULL_STATUS_DIS PIN_PULL_DIR_DOWN>;
+						pin-names = "CONFIG_DONE";
+					};
+					group2 {
+						pins = <&pinctrl 1 PIN_FN_ALT PIN_PULL_STATUS_DIS PIN_PULL_DIR_DOWN>;
+						pin-names = "CONFIG_ERROR";
+					};
+				};
 			};
 		};
 
@@ -188,28 +199,26 @@
 			#size-cells = <0>;
 
 			ofe: ofe@0xA0710000 {
-				compatible = "rapidsi,ofe";
+				compatible = "rapidsi,ofe", "rapidsi,rigel";
 				reg = <0xA0710000>;
-				pins = <&pinctrl 0 PIN_FN_ALT PIN_PULL_STATUS_DIS PIN_PULL_DIR_DOWN>, 
-					   <&pinctrl 1 PIN_FN_ALT PIN_PULL_STATUS_DIS PIN_PULL_DIR_DOWN>;
-				pin-names = "CONFIG_DONE", "CONFIG_ERROR";
+				pinctrl-0 = <&ofe_default_pinmux>;
 				status = "disabled";
 			};
 
 			fcb: fcb@0xA0712000 {
-				compatible = "rapidsi,fcb";
+				compatible = "rapidsi,fcb", "rapidsi,rigel";
 				reg = <0xA0712000>;
 				status = "disabled";
 			};
 
 			icb: icb@0xA0716000 {
-				compatible = "rapidsi,icb";
+				compatible = "rapidsi,icb", "rapidsi,rigel";
 				reg = <0xA0716000>;
 				status = "disabled";
 			};
 
 			pcb: pcb@0xA0718000 {
-				compatible = "rapidsi,pcb";
+				compatible = "rapidsi,pcb", "rapidsi,rigel";
 				reg = <0xA0718000>;
 				status = "disabled";
 			};

@@ -15,7 +15,6 @@
 #define PIN_FN_FPGA 0x1
 #define PIN_FN_ALT 0x2
 #define PIN_FN_DEBUG 0x3
-#define PIN_FN_UNDEFINED 0x4
 
 /**
  * @brief Pin Pull Status Bit Values
