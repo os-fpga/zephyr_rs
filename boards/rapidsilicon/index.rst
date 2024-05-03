@@ -1,4 +1,4 @@
-.. _boards-andes:
+.. _boards-rapidsilicon:
 
 Rapid Silicon
 ################
