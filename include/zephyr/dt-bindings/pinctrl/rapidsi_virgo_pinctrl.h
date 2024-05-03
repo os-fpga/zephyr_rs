@@ -34,17 +34,17 @@
  * @brief PinCfg Offsets
  */
 
-#define PIN_EN_OFFSET       0x0
-#define PIN_PULL_EN_OFFSET  0x5
-#define PIN_PULL_DIR_OFFSET 0x6
-#define PIN_MODE_OFFSET     0x7
+#define PIN_EN_OFFSET           0x0
+#define PIN_PULL_STATE_OFFSET   0x5
+#define PIN_PULL_DIR_OFFSET     0x6
+#define PIN_MODE_OFFSET         0x7
 
 /**
  * @brief PinCfg Bit Masks
  */
 
 #define PIN_EN_MASK         0x1
-#define PIN_PULL_EN_MASK    0x20
+#define PIN_PULL_STATE_MASK 0x20
 #define PIN_PULL_DIR_MASK   0x40
 #define PIN_MODE_OFFSET     0x180
 
