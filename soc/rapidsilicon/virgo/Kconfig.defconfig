@@ -6,7 +6,7 @@ if SOC_SERIES_VIRGO
 # Kconfig picks the first default with a satisfied condition.
 # SoC defaults should be parsed before SoC Series defaults, because SoCs usually
 # overrides SoC Series values.
-rsource "Kconfig.defconfig.ae*"
+rsource "Kconfig.defconfig.virgo"
 
 config SYS_CLOCK_HW_CYCLES_PER_SEC
 	default 266666667
@@ -36,4 +36,4 @@ config MAX_IRQ_PER_AGGREGATOR
 config NUM_IRQS
 	default 32
 
-endif # SOC_SERIES_ANDES_AE350
+endif # SOC_SERIES_VIRGO

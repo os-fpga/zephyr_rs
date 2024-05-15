@@ -19,10 +19,8 @@
 		#size-cells = <0>;
 		cpu0: cpu@0 {
 			compatible = "andestech,andescore-v5", "riscv";
-			model = "riscv, n22";
 			status = "okay";
 			reg = <0>;
-			device_type = "cpu";
 			riscv,isa = "rv32imac, andes";
 			clock-frequency = <266666667>;
 			i-cache-line-size = <32>;
@@ -30,35 +28,28 @@
 		};
 	};
 
-	clic0: interrupt-controller@0xE2000000 {
+	clic0: interrupt-controller@E2000000 {
 		compatible = "nuclei,eclic";
 		#address-cells = <1>;
 		#interrupt-cells = <2>;
 		interrupt-controller;
 		reg = <0xE2000000 0x04000000>;
-		riscv,max-priority = <255>;
-		riscv,ndev = <1023>;
 	};
 	
-	ocm: memory@0xA0300000 {
+	ocm: memory@A0300000 {
 		compatible = "rapidsi,mem";
 		device_type = "memory";
 		reg = <0xA0300000 DT_SIZE_K(64)>;
 	};
 	
-	ilm: ilm@0xA0200000 {
-		compatible = "rapidsi,mem";
-		device_type = "memory";
-		reg = <0xA0200000 DT_SIZE_K(64)>;
-	};
-
-	xip_mem: xip_mem@0xA020005C {
+	xip_mem: xip_mem@A020005C {
 		compatible = "rapidsi,mem";
 		device_type = "memory";
 		reg = <0xA020005C (DT_SIZE_K(64)-0x5C)>;
 	};
 
 	soc {
+		compatible = "rapidsi,virgo";
 		#address-cells = <1>;
 		#size-cells = <1>;
 		ranges;
@@ -69,21 +60,21 @@
 			interrupts-extended = <&clic0 7 1>;
 		};
 
-		scu: scu@0xF1000000 {
+		scu: scu@A0110000 {
 			compatible = "rapidsi,scu";
 			reg = <0xA0110000 DT_SIZE_K(64)>;
 			#address-cells = <1>;
 			#size-cells = <0>;
 			status = "okay";
 
-			pvt: pvt@0xA0112000 {
+			pvt: pvt@A0112000 {
 				compatible = "riscv,pvt";
 				reg = <0xA0112000>;
 				clock-frequency = <133333333>;
 				status = "okay";
 			};
 		
-			pinctrl: pin-controller@0xA0111000 {
+			pinctrl: pin-controller@A0111000 {
 				compatible = "rapidsi,pinctrl";
 				reg = <0xA0111000>;
 				npins = <16>;
@@ -91,13 +82,15 @@
 				pin-controller;
 				status = "okay";
 
-				ofe_default_pinmux {
+				ofe_default_pinmux: ofe_default_pinmux {
 					compatible = "rapidsi,rigel";
 					group1 { 
+						compatible = "rapidsi,rigel";
 						pins = <&pinctrl 0 PIN_FN_ALT PIN_PULL_STATUS_DIS PIN_PULL_DIR_DOWN>;
 						pin-names = "CONFIG_DONE";
 					};
 					group2 {
+						compatible = "rapidsi,rigel";
 						pins = <&pinctrl 1 PIN_FN_ALT PIN_PULL_STATUS_DIS PIN_PULL_DIR_DOWN>;
 						pin-names = "CONFIG_ERROR";
 					};
@@ -105,13 +98,13 @@
 			};
 		};
 
-		flash: flash@0xB0000000 {
+		flash: flash@B0000000 {
 			compatible = "micron,m25p32";
 			reg = <0xB0000000 DT_SIZE_M(16)>;
 			status = "disabled";
 		};
 
-		uart0: serial@0xA0420000 {
+		uart0: serial@A0420000 {
 			compatible = "ns16550";
 			reg = <0xA0420000 0xFFFF>;
 			reg-shift = <2>;
@@ -122,7 +115,7 @@
 			status = "disabled";
 		};
 
-		pit0: pit@0xA0520000 {
+		pit0: pit@A0520000 {
 			compatible = "andestech,atcpit100";
 			reg = <0xA0520000 0xFFFF>;
 			interrupts = <19 4>;
@@ -132,18 +125,18 @@
 			status = "disabled";
 		};
 
-		gpio0: gpio@0xA0510000 {
+		gpio0: gpio@A0510000 {
 			compatible = "andestech,atcgpio100";
 			reg = <0xA0510000 0xFFFF>;
 			interrupts = <26 2>;
 			interrupt-parent = <&clic0>;
 			gpio-controller;
 			ngpios = <8>;
-			#gpio-cells = <3>;
+			#gpio-cells = <2>;
 			status = "disabled";
 		};
 
-		i2c0: i2c@0xA0410000 {
+		i2c0: i2c@A0410000 {
 			compatible = "andestech,atciic100";
 			reg = <0xA0410000 0xFFFF>;
 			interrupts = <25 6>;
@@ -153,7 +146,7 @@
 			status = "disabled";
 		};
 
-		spi0: spi@0xA0800000 {
+		spi0: spi@A0800000 {
 			compatible = "andestech,atcspi200";
 			reg = <0xA0800000 0xFFFF>;
 			interrupts = <24 5>;
@@ -167,7 +160,7 @@
 			status = "disabled";
 		};
 
-		dma0: dma@0xA0600000 {
+		dma0: dma@A0600000 {
 			compatible = "andestech,atcdmac300";
 			reg = <0xA0600000 0xFFFF>;
 			interrupts = <27 9>;
@@ -179,7 +172,7 @@
 			status = "disabled";
 		};
 
-		bcpu_wdt: wdt@0xA0120000 {
+		bcpu_wdt: wdt@A0120000 {
 			compatible = "andestech,atcwdt100";
 			reg = <0xA0120000 DT_SIZE_K(16)>;
 			clock-frequency = <266666667>;
@@ -190,7 +183,7 @@
 			status = "okay";
 		};
 
-		pufcc: pufcc@0xA0130000 {
+		pufcc: pufcc@A0130000 {
 			compatible = "pufcc";
 			reg = <0xA0130000 DT_SIZE_K(64)>;
 			interrupts = <33 3>;
@@ -198,32 +191,32 @@
 			status = "okay";		
 		};
 
-		fpga_cfg: cfg-ctrl@0xA0710000 {
+		fpga_cfg: cfg-ctrl@A0710000 {
 			compatible = "rapidsi,rigel";
 			reg = <0xA0710000 DT_SIZE_K(64)>;
 			#address-cells = <1>;
 			#size-cells = <0>;
 
-			ofe: ofe@0xA0710000 {
+			ofe: ofe@A0710000 {
 				compatible = "rapidsi,ofe", "rapidsi,rigel";
 				reg = <0xA0710000>;
 				pinctrl-0 = <&ofe_default_pinmux>;
 				status = "disabled";
 			};
 
-			fcb: fcb@0xA0712000 {
+			fcb: fcb@A0712000 {
 				compatible = "rapidsi,fcb", "rapidsi,rigel";
 				reg = <0xA0712000>;
 				status = "disabled";
 			};
 
-			icb: icb@0xA0716000 {
+			icb: icb@A0716000 {
 				compatible = "rapidsi,icb", "rapidsi,rigel";
 				reg = <0xA0716000>;
 				status = "disabled";
 			};
 
-			pcb: pcb@0xA0718000 {
+			pcb: pcb@A0718000 {
 				compatible = "rapidsi,pcb", "rapidsi,rigel";
 				reg = <0xA0718000>;
 				status = "disabled";

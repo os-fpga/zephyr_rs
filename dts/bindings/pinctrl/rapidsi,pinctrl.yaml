@@ -61,11 +61,18 @@ properties:
   reg:
     required: true
 
+  pin-controller:
+    type: boolean
+    description: |
+      This property specifies that it is the pin controller
+      for the underlying system.
+
   npins:
     type: int
     required: true
 
   "#pin-cells":
+    type: int
     const: 4
 
 pin-cells:

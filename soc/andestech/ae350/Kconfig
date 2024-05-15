@@ -18,7 +18,7 @@ config SOC_ANDES_AE350
 
 if SOC_SERIES_ANDES_AE350
 
-choice
+choice 
 prompt "Base CPU ISA options"
 default RV32I_CPU
 
