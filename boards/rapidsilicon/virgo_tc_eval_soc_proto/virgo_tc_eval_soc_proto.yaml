@@ -1,20 +1,20 @@
 identifier: virgo_tc_eval_soc_proto
-name: virgo_tc_eval_soc_proto
+name: Andes VIRGO_TC_EVAL SOC_PROTO
 type: mcu
-arch: riscv32
+arch: riscv
 toolchain:
   - zephyr
   - cross-compile
-ram: 64KB
+ram: 64
 supported:
   - gpio
-  - usart
-  - flash
-  - wdt
-  - spi
+  - counter
   - i2c
-  - crypto
+  - spi
+  - watchdog
+  - flash
   - dma
 testing:
   ignore_tags:
     - bluetooth
+vendor: rapidsi

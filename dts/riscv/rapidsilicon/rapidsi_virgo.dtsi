@@ -28,12 +28,15 @@
 		};
 	};
 
-	clic0: interrupt-controller@E2000000 {
+	eclic: interrupt-controller@E2000000 {
 		compatible = "nuclei,eclic";
-		#address-cells = <1>;
+		#address-cells = <0>;
 		#interrupt-cells = <2>;
 		interrupt-controller;
-		reg = <0xE2000000 0x04000000>;
+		reg =  <0xE2000000 0x0001
+			0xE2000004 0x0004
+			0xE200000b 0x0001
+			0xE2001000 0x1000>;
 	};
 	
 	ocm: memory@A0300000 {
@@ -57,7 +60,7 @@
 		mtimer: timer@e6000000 {
 			compatible = "andestech,machine-timer";
 			reg = <0xe6000000 0x10>;
-			interrupts-extended = <&clic0 7 1>;
+			interrupts-extended = <&eclic 7 1>;
 		};
 
 		scu: scu@A0110000 {
@@ -109,7 +112,7 @@
 			reg = <0xA0420000 0xFFFF>;
 			reg-shift = <2>;
 			interrupts = <22 8>;
-			interrupt-parent = <&clic0>;
+			interrupt-parent = <&eclic>;
 			clock-frequency = <266666667>;
 			current-speed = <115200>;
 			status = "disabled";
@@ -119,7 +122,7 @@
 			compatible = "andestech,atcpit100";
 			reg = <0xA0520000 0xFFFF>;
 			interrupts = <19 4>;
-			interrupt-parent = <&clic0>;
+			interrupt-parent = <&eclic>;
 			clock-frequency = <266666667>;
 			prescaler = <600>;
 			status = "disabled";
@@ -129,7 +132,7 @@
 			compatible = "andestech,atcgpio100";
 			reg = <0xA0510000 0xFFFF>;
 			interrupts = <26 2>;
-			interrupt-parent = <&clic0>;
+			interrupt-parent = <&eclic>;
 			gpio-controller;
 			ngpios = <8>;
 			#gpio-cells = <2>;
@@ -140,7 +143,7 @@
 			compatible = "andestech,atciic100";
 			reg = <0xA0410000 0xFFFF>;
 			interrupts = <25 6>;
-			interrupt-parent = <&clic0>;
+			interrupt-parent = <&eclic>;
 			#address-cells = <1>;
 			#size-cells = <0>;
 			status = "disabled";
@@ -150,7 +153,7 @@
 			compatible = "andestech,atcspi200";
 			reg = <0xA0800000 0xFFFF>;
 			interrupts = <24 5>;
-			interrupt-parent = <&clic0>;
+			interrupt-parent = <&eclic>;
 			dmas = <&dma0 0 0 0x009>,
 			       <&dma0 1 1 0x00A>;
 			dma-names = "tx", "rx";
@@ -164,7 +167,7 @@
 			compatible = "andestech,atcdmac300";
 			reg = <0xA0600000 0xFFFF>;
 			interrupts = <27 9>;
-			interrupt-parent = <&clic0>;
+			interrupt-parent = <&eclic>;
 			dma-channels = <8>;
 			dma-requests = <16>;
 			chain-transfer = <1>;
@@ -179,7 +182,7 @@
 			intr-time-scale = <7>;
 			rst-time-scale = <7>;
 			interrupts = <0xffffffff 1>;
-			interrupt-parent = <&clic0>;
+			interrupt-parent = <&eclic>;
 			status = "okay";
 		};
 
@@ -187,7 +190,7 @@
 			compatible = "pufcc";
 			reg = <0xA0130000 DT_SIZE_K(64)>;
 			interrupts = <33 3>;
-			interrupt-parent = < &clic0 >;	
+			interrupt-parent = < &eclic >;	
 			status = "okay";		
 		};
 

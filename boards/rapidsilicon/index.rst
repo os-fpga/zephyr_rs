@@ -1,6 +1,6 @@
-.. _boards-rapidsilicon:
+.. _boards-andes:
 
-Rapid Silicon
+Rapid Silicon Technology
 ################
 
 .. toctree::

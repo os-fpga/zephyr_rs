@@ -1,4 +1,4 @@
-# Copyright (c) 2024 Rapid Silicon
+# Copyright (c) 2021 Andes Technology Corporation
 # SPDX-License-Identifier: Apache-2.0
 
 config SOC_SERIES_VIRGO
@@ -6,14 +6,16 @@ config SOC_SERIES_VIRGO
 	select RISCV_PRIVILEGED
 	select RISCV_HAS_CLIC
 
+config SOC_VIRGO
+	select ATOMIC_OPERATIONS_BUILTIN
+	select INCLUDE_RESET_VECTOR
 	select RISCV_ISA_RV32I
 	select RISCV_ISA_EXT_M
 	select RISCV_ISA_EXT_A
 	select RISCV_ISA_EXT_C
 	select RISCV_ISA_EXT_ZICSR
 
-	select ATOMIC_OPERATIONS_BUILTIN
-	select INCLUDE_RESET_VECTOR
+if SOC_SERIES_VIRGO
 
 config SOC_ANDES_V5_EXECIT
 	bool "Andes V5 EXEC.IT extension"
@@ -25,3 +27,4 @@ config SOC_ANDES_V5_EXECIT
 		a look-up table and replaces suitable 32-bit instructions with
 		the 16-bit "exec.it <INDEX>".
 
+endif # SOC_SERIES_VIRGO

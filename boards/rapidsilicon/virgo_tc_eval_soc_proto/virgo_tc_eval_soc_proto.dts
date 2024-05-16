@@ -4,27 +4,28 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-/dts-v1/;
+ /dts-v1/;
 
-#include <rapidsilicon/rapidsi_virgo.dtsi>
-/
-{
-    model = "Rapid Silicon Virgo Test Chip Evaluation";
-    compatible = "rapidsi,virgo_tc_eval_soc_proto";
-    timebase-frequency = <26666667>; // 26.6MHz for fpga only
-
-    chosen {
-        zephyr,console = &uart0;
-        zephyr,shell-uart = &uart0;
-        zephyr,sram = &xip_mem;
-    };
-};
-
-&uart0 {
-    clock-frequency = <26666667>;
-    status = "okay";
-};
-
-&cpu0 {
-    clock-frequency = <26666667>; // 13.3MHz for fpga only
-};
+ #include <rapidsilicon/rapidsi_virgo.dtsi>
+ /
+ {
+	 model = "Rapid Silicon Virgo Test Chip Evaluation";
+	 compatible = "rapidsi,virgo_tc_eval_soc_proto";
+	 timebase-frequency = <26666667>; // 26.6MHz for fpga only
+ 
+	 chosen {
+		 zephyr,console = &uart0;
+		 zephyr,shell-uart = &uart0;
+		 zephyr,sram = &xip_mem;
+	 };
+ };
+ 
+ &uart0 {
+	 clock-frequency = <26666667>;
+	 status = "okay";
+ };
+ 
+ &cpu0 {
+	 clock-frequency = <26666667>; // 26.6MHz for fpga only
+ };
+ 
