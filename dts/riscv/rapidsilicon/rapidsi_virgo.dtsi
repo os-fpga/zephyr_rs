@@ -61,6 +61,7 @@
 			compatible = "andestech,machine-timer";
 			reg = <0xe6000000 0x10>;
 			interrupts-extended = <&eclic 7 1>;
+			status = "okay";
 		};
 
 		scu: scu@A0110000 {
@@ -74,7 +75,7 @@
 				compatible = "riscv,pvt";
 				reg = <0xA0112000>;
 				clock-frequency = <133333333>;
-				status = "okay";
+				status = "disabled";
 			};
 		
 			pinctrl: pin-controller@A0111000 {
@@ -83,7 +84,7 @@
 				npins = <16>;
 				#pin-cells = <4>;
 				pin-controller;
-				status = "okay";
+				status = "disabled";
 
 				ofe_default_pinmux: ofe_default_pinmux {
 					compatible = "rapidsi,rigel";
@@ -159,7 +160,7 @@
 			dma-names = "tx", "rx";
 			#address-cells = <1>;
 			#size-cells = <0>;
-			clock-frequency = <66000000>;
+			clock-frequency = <266666667>;
 			status = "disabled";
 		};
 
@@ -183,7 +184,7 @@
 			rst-time-scale = <7>;
 			interrupts = <0xffffffff 1>;
 			interrupt-parent = <&eclic>;
-			status = "okay";
+			status = "disabled";
 		};
 
 		pufcc: pufcc@A0130000 {
@@ -191,7 +192,7 @@
 			reg = <0xA0130000 DT_SIZE_K(64)>;
 			interrupts = <33 3>;
 			interrupt-parent = < &eclic >;	
-			status = "okay";		
+			status = "disabled";		
 		};
 
 		fpga_cfg: cfg-ctrl@A0710000 {
