@@ -12,7 +12,7 @@ config SOC_VIRGO
 	select RISCV_ISA_RV32I
 	select RISCV_ISA_EXT_M
 	select RISCV_ISA_EXT_A
-	select RISCV_ISA_EXT_C
+	# select RISCV_ISA_EXT_C
 	select RISCV_ISA_EXT_ZICSR
 
 if SOC_SERIES_VIRGO
