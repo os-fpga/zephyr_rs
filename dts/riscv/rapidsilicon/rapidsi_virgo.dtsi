@@ -39,14 +39,14 @@
 			0xE2001000 0x1000>;
 	};
 	
-	ocm: memory@A0300000 {
-		compatible = "rapidsi,mem";
+	sram: memory@A0300000 {
+		compatible = "rapidsi,dlm";
 		device_type = "memory";
-		reg = <0xA0300000 DT_SIZE_K(64)>;
+		reg = <0xA0300000 DT_SIZE_K(32)>;
 	};
 	
 	xip_mem: xip_mem@A0200060 {
-		compatible = "rapidsi,mem";
+		compatible = "rapidsi,ilm";
 		device_type = "memory";
 		reg = <0xA0200060 (DT_SIZE_K(64)-0x00000060)>;
 	};
