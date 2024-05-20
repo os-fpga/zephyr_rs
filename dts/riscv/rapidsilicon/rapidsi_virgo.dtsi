@@ -108,15 +108,14 @@
 			status = "disabled";
 		};
 
-		uart0: serial@A0420000 {
+		uart0: serial@a0420020 {
 			compatible = "ns16550";
-			reg = <0xA0420000 0xFFFF>;
+			reg = <0xa0420020 0xFFFF>;
 			reg-shift = <2>;
 			interrupts = <22 8>;
 			interrupt-parent = <&eclic>;
 			clock-frequency = <266666667>;
-			current-speed = <115200>;
-			status = "disabled";
+			status = "okay";
 		};
 
 		pit0: pit@A0520000 {
