@@ -5,14 +5,17 @@
  */
 
 #include <stdio.h>
-volatile int I_am_imp = 0;
-volatile int counter = 100;
+#include <zephyr/kernel.h>
+
+static volatile int JATW = 0;
+static volatile const int counter = 100;
 int main(void)
 {
-	while(I_am_imp < counter) {
-		I_am_imp++;
+	while(JATW < counter) {
+		JATW++;
+		printf("%d - Hello %s\n", JATW, CONFIG_BOARD_TARGET);
+		k_msleep(1000);
 	}
-	printf("Hi Rahul we just printed Hello World to our %s\n", CONFIG_BOARD_TARGET);
 
 	return 0;
 }
