@@ -30,6 +30,7 @@
  
 	 eclic: interrupt-controller@E2000000 {
 		 compatible = "nuclei,eclic";
+		 status = "okay";
 		 #address-cells = <0>;
 		 #interrupt-cells = <2>;
 		 interrupt-controller;
