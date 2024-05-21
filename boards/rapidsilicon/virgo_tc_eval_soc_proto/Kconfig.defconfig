@@ -1,5 +1,0 @@
-# Copyright (c) 2024 Rapid Silicon
-# SPDX-License-Identifier: Apache-2.0
-
-config BOARD
-	default "virgo_tc_eval" if BOARD_VIRGO_TC_EVAL_SOC_PROTO
