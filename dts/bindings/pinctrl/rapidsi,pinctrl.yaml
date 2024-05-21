@@ -27,7 +27,7 @@ description: |
     5 - pin pull resistor direction being up or down.
   */
   &pinctrl {
-    #pad-cells = <4>;
+    #pin-cells = <4>;
     ofe_default_pinmux {   
       group1 { 
         pins = <&pinctrl 0 PIN_FN_ALT PIN_PULL_STATUS_DIS PIN_PULL_DIR_DOWN>;

@@ -3,6 +3,8 @@
 
 include: base.yaml
 
+compatible: "pufsecurity,pufcc"
+
 properties:
   reg:
     required: true
