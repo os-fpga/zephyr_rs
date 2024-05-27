@@ -22,9 +22,12 @@
 
 #ifdef CONFIG_XIP
 #define ROMABLE_REGION              ROM
+#elif DT_NODE_HAS_COMPAT_STATUS(DT_NODELABEL(xip_mem), rapidsi_ilm, okay)
+#define ROMABLE_REGION              ROM
 #else
 #define ROMABLE_REGION              RAM
 #endif
+
 #define RAMABLE_REGION              RAM
 
 #define _EXCEPTION_SECTION_NAME     exceptions
@@ -49,8 +52,17 @@
 #define ROM_SIZE DT_REG_SIZE_BY_IDX(SPI_CTRL, 1)
 #endif
 #else /* CONFIG_XIP */
+/* In case CONFIG_XIP=n, we check if we have any other ram like
+execute in place memory available for Virgo or not. If yes,
+then we use that for ROM otherwise we fall back to SRAM. 
+*/
+#if DT_NODE_HAS_COMPAT_STATUS(DT_NODELABEL(xip_mem), rapidsi_ilm, okay)
+#define ROM_BASE DT_REG_ADDR(DT_NODELABEL(xip_mem))
+#define ROM_SIZE DT_REG_SIZE(DT_NODELABEL(xip_mem))
+#else
 #define ROM_BASE CONFIG_SRAM_BASE_ADDRESS
 #define ROM_SIZE KB(CONFIG_SRAM_SIZE)
+#endif /* XIP_MEM */
 #endif /* CONFIG_XIP */
 
 #define RAM_BASE CONFIG_SRAM_BASE_ADDRESS
@@ -74,9 +86,7 @@
 
 MEMORY
 {
-#ifdef CONFIG_XIP
-    ROM (rx)  : ORIGIN = ROM_BASE, LENGTH = ROM_SIZE
-#endif
+	ROM (rx)  : ORIGIN = ROM_BASE, LENGTH = ROM_SIZE
     RAM (rwx) : ORIGIN = RAM_BASE, LENGTH = RAM_SIZE
 
     LINKER_DT_REGIONS()
