@@ -8,13 +8,11 @@
 #include <zephyr/kernel.h>
 
 static volatile int JATW = 0;
-static volatile int counter = 100;
+
 int main(void)
 {
-	printf("AZTW Getting into Main Loop\n");
-
 	while(true) {
-		printf("%d - AZTW Infinite Main Loop %s\n", JATW++, CONFIG_BOARD_TARGET);
+		printf("%d - Welcome %s\n", JATW++, CONFIG_BOARD_TARGET);
 		k_msleep(1000);
 	}
 
