@@ -9,8 +9,8 @@
  #include <rapidsilicon/rapidsi_virgo.dtsi>
  /
  {
-	 model = "Rapid Silicon Virgo Test Chip Evaluation";
-	 compatible = "rapidsi,virgo_tc_eval_soc_proto";
+	 model = "Rapid Silicon Virgo Proto";
+	 compatible = "rapidsi,virgo_proto";
 	 timebase-frequency = <26666667>; // 26.6MHz for fpga only
  
 	 chosen {

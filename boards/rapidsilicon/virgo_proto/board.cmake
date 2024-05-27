@@ -6,7 +6,7 @@ board_runner_args(
                     openocd 
                     "--cmd-load=load"
                     "--use-elf"  
-                    "--elf-file=/home/junaid/zephyrproject/zephyr/build/zephyr/zephyr.elf" 
+                    "--elf-file=${ZEPHYR_BASE}/build/zephyr/zephyr.elf" 
                     "--gdb-init=target extended-remote 10.0.8.102:3333"
                  )
 set(OPENOCD_FLASH "flash")
