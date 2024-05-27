@@ -20,6 +20,17 @@ config SOC_VIRGO
 
 if SOC_SERIES_VIRGO
 
+if GEN_IRQ_VECTOR_TABLE
+
+	choice IRQ_VECTOR_TABLE_TYPE
+		default IRQ_VECTOR_TABLE_JUMP_BY_ADDRESS
+	endchoice
+
+	config RISCV_MCAUSE_EXCEPTION_MASK
+		default 0x1F
+
+endif
+
 config SOC_ANDES_V5_EXECIT
 	bool "Andes V5 EXEC.IT extension"
 	depends on RISCV_ISA_EXT_C
