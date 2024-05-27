@@ -12,7 +12,7 @@ static volatile int JATW = 0;
 int main(void)
 {
 	while(true) {
-		printf("%d - Welcome to the %s\n", JATW++, CONFIG_BOARD_TARGET);
+		printf("%d - Checking in to the %s\n", JATW++, CONFIG_BOARD_TARGET);
 		k_msleep(1000);
 	}
 
