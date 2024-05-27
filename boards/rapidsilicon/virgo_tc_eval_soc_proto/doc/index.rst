@@ -1,63 +1,45 @@
-.. _adp_xc7k_ae350:
+.. virgo:
 
-Andes ADP-XC7K AE350
+Rapidsi Virgo
 ####################
 
 Overview
 ********
 
-ADP-XC7K AE350 board is for AndeShape AE350 platform on ADP-XC7K series
-FPGA-based development boards.
-
-ADP-XC7K series are FPGA-based development and prototyping boards for evaluation of
-variety of AndesCore processors and AndeShape SoC platform IPs.
-AE350 is a RISC-V platform which can integrate AndesCore CPUs with a collection
-of fundamental peripheral IPs.
-
-1st figure shows the green PCB is ADP-XC7K160 and 2nd figure shows the red PCB is ADP-XC7K410.
-
-.. image:: img/adp_xc7k160.jpg
+.. image:: img/virgo.jpg
      :align: center
-     :alt: ADP-XC7K160
+     :alt: Virgo
 
-.. image:: img/adp_xc7k410.jpg
-     :align: center
-     :alt: ADP-XC7K410
-
-More information can be found on `ADP-XC7K160/410`_ and `AndeShape AE350`_ websites.
+More information can be found on ' ' websites.
 
 Hardware
 ********
 
-The ADP-XC7K AE350 platform integrates 1 ~ 4 cores 32/64-bit 60MHz RISC-V CPUs, DSP,
-1GB RAM, Cache, SPI flash memory, ethernet controller and other peripherals.
+Summary:
 
-The ADP-XC7K AE350 platform provides following hardware components:
+The virgo platform provides following hardware components:
 
-- 1 ~ 4 cores 32/64-bit 60MHz AndeStar v5 RISC-V CPUs
-- 1GB on-board SDRAM
-- 2MB SPI flash memory (1MB can be used for XIP)
+- 1 core 32-bit 266MHz AndeStar v5 RISC-V CPUs
+- 64KB on-board ILM
+- 32KB on-board DLM
+- 2MB SPI flash memory (Can be used for XIP)
 - UART
 - I2C
 - SPI
 - GPIO
 - PWM
 - DMA
-- 10/100 Ethernet RJ45 port
-- LCD module connector
-- 16KB I2C EEPROM
-- SD memory card slot
-- MIC-in, Line-in, and Line-out with AC97 audio codec
+- Crypto Modules
 
 Supported Features
 ==================
 
-The ``adp_xc7k/ae350`` board configuration supports the following hardware features:
+The ``virgo`` board configuration supports the following hardware features:
 
 +----------------+------------+----------------------+
 | Interface      | Controller | Driver/Component     |
 +================+============+======================+
-| PLIC           | on-chip    | interrupt_controller |
+| CLIC           | on-chip    | interrupt_controller |
 +----------------+------------+----------------------+
 | RISC-V Machine | on-chip    | timer                |
 | Timer          |            |                      |
@@ -72,17 +54,15 @@ The ``adp_xc7k/ae350`` board configuration supports the following hardware featu
 +----------------+------------+----------------------+
 | I2C            | on-chip    | i2c                  |
 +----------------+------------+----------------------+
-| EEPROM         | on-chip    | eeprom               |
-+----------------+------------+----------------------+
 | FLASH          | on-chip    | flash                |
 +----------------+------------+----------------------+
 | HWINFO         | on-chip    | syscon               |
 +----------------+------------+----------------------+
-| MAILBOX        | on-chip    | mbox                 |
-+----------------+------------+----------------------+
 | DMA            | on-chip    | dma                  |
 +----------------+------------+----------------------+
 | WATCHDOG       | on-chip    | wdt                  |
++----------------+------------+----------------------+
+| CRYPTO         | on-chip    | pufcc                |
 +----------------+------------+----------------------+
 
 Other hardware features are not supported yet.
@@ -90,85 +70,18 @@ Other hardware features are not supported yet.
 Connections and IOs
 ===================
 
-The ADP-XC7K AE350 platform has 1 GPIO controller. It providing 32 bits of IO.
-It is responsible for pin input/output, pull-up, etc.
+The Rapidsi Virgo platform has 1 GPIO controller. It providing 8 bits of IO.
+It is responsible for pin input/output, while the pull-up, etc are controlled
+by the pin controller module
 
-Mapping from GPIO controller to the ADP-XC7K board pins:
+Mapping from GPIO controller to the Virgo Evaluation board pins:
 
 +--------------------+--------------------+
 | GPIO controller    | Usage / Board pins |
 +====================+====================+
 | **Push Buttons**   |                    |
 +--------------------+--------------------+
-| GPIO.0             | SW1                |
-+--------------------+--------------------+
-| GPIO.1             | SW2                |
-+--------------------+--------------------+
-| GPIO.2             | SW3                |
-+--------------------+--------------------+
-| GPIO.3             | SW4                |
-+--------------------+--------------------+
-| GPIO.4             | SW5                |
-+--------------------+--------------------+
-| GPIO.5             | SW6                |
-+--------------------+--------------------+
-| GPIO.6             | SW7                |
-+--------------------+--------------------+
-| **7-Segment LED1** |                    |
-+--------------------+--------------------+
-| GPIO.16            | 7SEG1.A            |
-+--------------------+--------------------+
-| GPIO.17            | 7SEG1.B            |
-+--------------------+--------------------+
-| GPIO.18            | 7SEG1.C            |
-+--------------------+--------------------+
-| GPIO.19            | 7SEG1.D            |
-+--------------------+--------------------+
-| GPIO.20            | 7SEG1.E            |
-+--------------------+--------------------+
-| GPIO.21            | 7SEG1.F            |
-+--------------------+--------------------+
-| GPIO.22            | 7SEG1.G            |
-+--------------------+--------------------+
-| GPIO.23            | 7SEG1.DP           |
-+--------------------+--------------------+
-| **7-Segment LED2** |                    |
-+--------------------+--------------------+
-| GPIO.24            | 7SEG2.A            |
-+--------------------+--------------------+
-| GPIO.25            | 7SEG2.B            |
-+--------------------+--------------------+
-| GPIO.26            | 7SEG2.C            |
-+--------------------+--------------------+
-| GPIO.27            | 7SEG2.D            |
-+--------------------+--------------------+
-| GPIO.28            | 7SEG2.E            |
-+--------------------+--------------------+
-| GPIO.29            | 7SEG2.F            |
-+--------------------+--------------------+
-| GPIO.30            | 7SEG2.G            |
-+--------------------+--------------------+
-| GPIO.31            | 7SEG2.DP           |
-+--------------------+--------------------+
-| **GPIO pins**      |                    |
-+--------------------+--------------------+
-| GPIO.7             | IDE_CON1.4         |
-+--------------------+--------------------+
-| GPIO.8             | IDE_CON1.6         |
-+--------------------+--------------------+
-| GPIO.9             | IDE_CON1.8         |
-+--------------------+--------------------+
-| GPIO.10            | IDE_CON1.10        |
-+--------------------+--------------------+
-| GPIO.11            | IDE_CON1.11        |
-+--------------------+--------------------+
-| GPIO.12            | IDE_CON1.12        |
-+--------------------+--------------------+
-| GPIO.13            | IDE_CON1.13        |
-+--------------------+--------------------+
-| GPIO.14            | IDE_CON1.14        |
-+--------------------+--------------------+
-| GPIO.15            | IDE_CON1.15        |
+| GPIO.x             | -                  |
 +--------------------+--------------------+
 
 Other peripheral mapping are listed below:
@@ -178,37 +91,37 @@ Other peripheral mapping are listed below:
 +=============+=================================+
 | SPI_1       | internal connected to SPI Flash |
 +-------------+---------------------------------+
-| SPI_2_CS    | IDE_CON1.37                     |
-+-------------+---------------------------------+
-| SPI_2_MOSI  | IDE_CON1.36                     |
-+-------------+---------------------------------+
-| SPI_2_MISO  | IDE_CON1.38                     |
-+-------------+---------------------------------+
-| SPI_2_SCLK  | IDE_CON1.35                     |
-+-------------+---------------------------------+
-| I2C_SDA     | J27.1                           |
-+-------------+---------------------------------+
-| I2C_SCL     | J27.2                           |
-+-------------+---------------------------------+
 
 System Clock
 ------------
 
-The ADP-XC7K AE350 platform has 60MHz core clock.
+The Rapidsi Virgo platform has 266MHz core clock.
 
 Serial Port
 -----------
 
-The ADP-XC7K AE350 platform has 2 UARTs.
-The Zephyr console output is by default assigned to UART2 and the default
+The Rapidsi Virgo platform has 1 UART.
+The Zephyr console output is by default assigned to UART0 and the default
 settings are 115200 8N1.
 
 Programming and debugging
 *************************
 
 For debugging zephyr applications or burning them into a flash, you will need to
-connect Andes ICE from host computer to ADP-XC7K board and execute the
-Andes ICE management software, ICEman, on this host computer.
+connect Rapidsi OpenOCD Port host computer to Virgo Evaluation board and execute the
+west flash command by filling in the appropriate IP and Port number in the board.cmake
+file.
+
+For Stepwise interactive debugging, follow the procedure mentioned below:
+
+interactive Zephyr Debugging
+===========================
+
+In order to do debugging of Zephyr RTOS over SoC prototype, follow the steps below:
+
+1 - In the project navigation pan of the VS Code, create a folder ‘.vscode’. Under this folder, create a file called launch.json as shown in picture below:
+
+
 
 Connecting Andes ICE (AICE)
 ===========================
