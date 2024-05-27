@@ -1,5 +1,5 @@
 board:
-  name: virgo_tc_eval_soc_proto
+  name: virgo_proto
   vendor: rapidsi
   socs:
   - name: virgo
