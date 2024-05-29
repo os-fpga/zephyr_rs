@@ -5,6 +5,7 @@ zephyr_include_directories(.)
 zephyr_sources(
   start.S
   soc_irq.S
+  soc_scu.c
 )
 
 zephyr_linker_sources(ROM_START SORT_KEY 0x0 common_linker/init.ld)
