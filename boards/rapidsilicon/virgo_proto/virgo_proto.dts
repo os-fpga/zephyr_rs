@@ -10,14 +10,14 @@
  /
  {
 	 model = "Rapid Silicon Virgo Test Chip Evaluation";
-	 compatible = "rapidsi,virgo_tc_eval_soc_proto";
+	 compatible = "rapidsi,virgo_proto";
 	 timebase-frequency = <26666667>; // 26.6MHz for fpga only
  
 	 chosen {
 		 zephyr,console = &uart0;
 		 zephyr,shell-uart = &uart0;
 		 zephyr,sram = &sram;
-		 zephyr,flash = &xip_mem;
+		 zephyr,flash = &flash;
 	 };
  };
  
