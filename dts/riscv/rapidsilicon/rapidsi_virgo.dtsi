@@ -73,8 +73,8 @@
 			 status = "disabled";			 
 		 };
 
-		 pvt: pvt@A0112000 {
-			compatible = "rapidsi,pvt", "riscv,pvt";
+		 pvt0: pvt@A0112000 {
+			compatible = "dti,pvt";
 			reg = <0xA0112000 0xFF>;
 			clock-frequency = <133333333>;
 			status = "disabled";

@@ -1,27 +1,16 @@
 # Copyright (c) 2024, Rapid Silicon
 # SPDX-License-Identifier: Apache-2.0
 
-description: Power Voltage and Temperature Monitoring Module
+description: Process, Voltage and Thermal Sensor Module
 
-compatible: "rapidsi,pvt"
+compatible: "dti,pvt"
 
 include: [base.yaml]
 
 properties:
 
-  io-channels:
-    required: false
-    description: |
-      ADC channel that will perform measurement
-
-  resolution:
-    type: int
-    required: false
-    description: |
-      ADC resolution to be used for the channel.
-
   clock-frequency:
     type: int
-    required: false
+    required: true
     description:
       Clock frequency of the ADC channel for PVT.

@@ -21,6 +21,11 @@
 	 };
  };
  
+ &pvt0 {
+	clock-frequency = <13333333>;
+	status = "okay";
+ };
+
  &scu {
 	status = "okay";
  };

@@ -1,0 +1,93 @@
+# Copyright (c) 2024 Rapid Silicon.
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig DTI_PVT
+    bool "DTI Process, Voltage and Thermal Sensor Configuration"
+    default n
+    depends on SENSOR
+    depends on DT_HAS_DTI_PVT_ENABLED
+
+    menu "PVT Timing Configuration Register Values"
+        depends on DTI_PVT
+
+        config DTI_PVT_RST_TREG_TIMEOUT
+            hex "Enter Timeout Value"
+            default 0x80
+                help
+                    This is the timeout value for process monitor
+
+        config DTI_PVT_RST_TREG_EN
+            hex "Enter the Enable Time value"
+            default 0x14
+                help
+                    Enable time before starting the monitor/sensor, RoundUp(100ns * CLK)
+
+        config DTI_PVT_RST_TREG_MSTEP
+            hex "Enter the measurement time value"
+            default 0x6
+                help
+                    Measuring time, RoundUp(30ns * CLK)
+              
+    endmenu
+
+    menu "PVT config register"        
+        depends on DTI_PVT
+
+        config DTI_PVT_RST_CONF_TRIM
+            hex "Enter the resistor adjustment value"
+            default 0x6
+                help
+                    Resistor value adjustment for post silicon to calibrate to simualtion results
+
+        config DTI_PVT_RST_CONF_FREQRANGE
+            int "Enter to Select Frequency Range"
+            range 0 1
+            default 0
+                help
+                    Clock Frquency range. Enter 1 for frequence range below 75MHz or
+                    Enter 0 for the frequence range between 75MHz and 200MHz.
+
+        config DTI_PVT_RST_CONF_DIV
+            int "Enter the Frequency Division Factor"
+            default 5
+                help
+                    Division factor 
+                        If freqrange = 0: 
+                            DIV = 1200/Freq_Mhz - 1
+                            DIV = 5 for 200 Mhz
+                            DIV = 7 for 150 Mhz
+                            DIV = 8 for 133 Mhz
+                            DIV = 11 for 100 Mhz
+                            DIV = 15 for 75 Mhz
+                        If freqrange = 1: 
+                            DIV = 600/Freq_Mhz – 1
+                            DIV = 11 for 50Mhz"
+
+        config DTI_PVT_RST_CONF_VMRANGE
+            int "Enter to select VM Range"
+            range 0 1
+            default 0
+                help
+                    Voltage Monitor Range. Enter 1 for VM range to monitor
+                    the voltage between 0 - 2 volts. And Enter 0 for VM range
+                    of 0 - 1 volts.
+
+        config DTI_PVT_RST_CONF_VMCAL_OFFSET
+            hex "Enter the Voltage calibration offset in signed two's complement"
+            default 0x0
+                help
+                    Voltage Calibration Offset (in signed two's complement format). Used to 
+                    adjust VM Code depended on Silicon corner.
+
+        config DTI_PVT_RST_CONF_TSCAL_OFFSET
+            hex "Enter the Thermal calibration offset in signed two's complement"
+            default 0x0
+                help
+                    Thermal Calibration Offset (in signed two's complement format). Used to 
+                    adjust TS Code depended on Silicon corner.
+
+    endmenu
+
+module = DTI_PVT
+module-str = dti_pvt
+source "subsys/logging/Kconfig.template.log_config"
