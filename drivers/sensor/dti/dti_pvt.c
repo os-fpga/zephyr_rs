@@ -17,6 +17,10 @@
 
 LOG_MODULE_REGISTER(DTI_PVT, CONFIG_SENSOR_LOG_LEVEL);
 
+static const struct sensor_driver_api s_dti_pvt_api = {
+	0, 0, 0, 0, 0, 0, 0 // TODO Fill this with proper related APIs
+};
+
 #define DTI_PVT_INIT(inst) 			\
 {									\
 									\
