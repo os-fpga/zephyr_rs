@@ -201,8 +201,6 @@ static int dti_pvt_read_results(
 								size_t pending_requests
 							   ) 
 {
-
-	size_t pending_requests = 0;
 	int ret = 0;
 	struct result_status res_status = {0};
 
@@ -323,7 +321,7 @@ static int dti_pvt_init(const struct device *dev) {
 	int ret = 0;
 	
 	const struct dti_pvt_config *dti_pvt_config = (struct dti_pvt_config *)dev->config;
-	struct dti_pvt_data *dti_pvt_data 	=	(struct dti_pvt_reg *)dev->data;
+	struct dti_pvt_data *dti_pvt_data 	=	(struct dti_pvt_data *)dev->data;
 
 	uint32_t freq_range = (dti_pvt_config->clk_mhz > 75) ? DTI_PVT_CONF_FREQRANGE_200M_75M
 										: DTI_PVT_CONF_FREQRANGE_UNDER_75M;
@@ -355,7 +353,7 @@ static int dti_pvt_init(const struct device *dev) {
 static int dti_pvt_attr_get(const struct device *dev,
 				 enum sensor_channel chan,
 				 enum sensor_attribute attr,
-				 const struct sensor_value *val)
+				 struct sensor_value *val)
 {
 	(void)dev;
 	(void)chan;
@@ -418,19 +416,17 @@ static const struct sensor_driver_api s_dti_pvt_api = {
 };
 
 #define DTI_PVT_INIT(inst) 													\
-{																			\
 	static const struct dti_pvt_config dti_pvt_##inst##_config =			\
 	{																		\
-		.clk_mhz = (DT_PROP(DT_DRV_INST(inst), clock_frequency) / 1000000); \
-	}																		\
+		.clk_mhz = (DT_PROP(DT_DRV_INST(inst), clock_frequency) / 1000000)  \
+	};																		\
 	static struct dti_pvt_data dti_pvt_##inst##_data = 						\
 	{																		\
-		.pvt_regs = (struct dti_pvt_reg*)DT_REG_ADDR(DT_DRV_INST(inst)); 	\
-		.results  = {0};													\
+		.pvt_regs = (struct dti_pvt_reg*)DT_REG_ADDR(DT_DRV_INST(inst)), 	\
+		.results  = {0}  													\
 	};																		\
-	SENSOR_DEVICE_DT_INST_DEFINE(inst, &dti_pvt_init, NULL,  				\
+	SENSOR_DEVICE_DT_INST_DEFINE(inst, dti_pvt_init, NULL,  				\
 	&dti_pvt_##inst##_data, &dti_pvt_##inst##_config, POST_KERNEL, 			\
-	CONFIG_SENSOR_INIT_PRIORITY, &s_dti_pvt_api); 							\
-}
+	CONFIG_SENSOR_INIT_PRIORITY, &s_dti_pvt_api); 							
 
 DT_INST_FOREACH_STATUS_OKAY(DTI_PVT_INIT)
