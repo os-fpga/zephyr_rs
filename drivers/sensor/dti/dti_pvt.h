@@ -11,7 +11,7 @@
 
 #include <zephyr/sys/util.h>
 
-struct dti_pvt_ctrl {
+struct dti_pvt_reg {
   // PVT CTRL
   volatile uint32_t req;           // 0x00
   volatile uint32_t treg;          // 0x04
@@ -82,11 +82,6 @@ enum dti_pvt_conf_div {
 
 #define DTI_PVT_OFFSET_CONF_VMRANGE 9
 #define DTI_PVT_MASK_CONF_VMRANGE 0x200
-
-enum dti_pvt_conf_vmrange {
-  DTI_PVT_CONF_VMRANGE_0V_1V = 0,  // Range 0-1V
-  DTI_PVT_CONF_VMRANGE_0V_2V = 1   // Range 0-2V, Enables a divide by 2
-};
 
 // Voltage calibration offset in signed two's complement
 #define DTI_PVT_OFFSET_CONF_VMCAL_OFFSET 10
@@ -174,23 +169,6 @@ enum dti_pvt_stt {
 
 //------------------ API Related -------------------//
 
-// Voltage sensor LUT index based on process corner and voltage
-enum dti_pvt_vm_process_corner {
-  DTI_PVT_VM_FF_1_98 = 2,
-  DTI_PVT_VM_ss_1_62 = 3,
-  DTI_PVT_VM_TT_1_80 = 4
-};
-
-// Temperature sensor LUT index based on process corner and voltage
-enum dti_pvt_ts_process_corner {
-  DTI_PVT_TS_FF_1_62 = 1,
-  DTI_PVT_TS_FF_1_98 = 2,
-  DTI_PVT_TS_SS_1_62 = 3,
-  DTI_PVT_TS_SS_1_98 = 4,
-  DTI_PVT_TS_TT_1_62 = 5,
-  DTI_PVT_TS_TT_1_98 = 6
-};
-
 struct dti_pvt_results {
   enum dti_pvt_result_pm_fast process_status;
   uint16_t process_diff_percentage;
@@ -199,5 +177,13 @@ struct dti_pvt_results {
   uint16_t error_flags;
 };
 
+struct dti_pvt_config {
+  uint32_t clk_mhz;
+};
+
+struct dti_pvt_data {
+  struct dti_pvt_reg *pvt_regs;
+  struct dti_pvt_results results;
+};
 
 #endif /* ZEPHYR_DRIVERS_DTI_PVT_H_ */

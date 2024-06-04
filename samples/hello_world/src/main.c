@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <zephyr/kernel.h>
+#include <zephyr/drivers/sensor.h>
 #include <soc.h>
 
 int main(void)
@@ -14,12 +15,17 @@ int main(void)
 	uint8_t chip_id = 0, vendor_id = 0;
 	soc_get_id(&chip_id, &vendor_id);
 
-	const struct device *dev = DEVICE_DT_GET(DT_NODELABEL(pvt0));
+	const struct device *pvt = DEVICE_DT_GET(DT_NODELABEL(pvt0));
 
-	if(dev == NULL) {
+	if(pvt == NULL) {
 		perror("PVT0 has status disabled or driver is not initialized...\n");
 	} else {
-		printf("PVT0 is initialized\n");
+		printf("PVT0 Object is Created\n");
+	}
+
+	if(!device_is_ready(pvt)) {
+		perror("Error with device initialization\n");
+		return -ENODEV;
 	}
 
 	while(true) {		

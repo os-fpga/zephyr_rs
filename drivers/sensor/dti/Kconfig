@@ -39,30 +39,6 @@ menuconfig DTI_PVT
                 help
                     Resistor value adjustment for post silicon to calibrate to simualtion results
 
-        config DTI_PVT_RST_CONF_FREQRANGE
-            int "Enter to Select Frequency Range"
-            range 0 1
-            default 0
-                help
-                    Clock Frquency range. Enter 1 for frequence range below 75MHz or
-                    Enter 0 for the frequence range between 75MHz and 200MHz.
-
-        config DTI_PVT_RST_CONF_DIV
-            int "Enter the Frequency Division Factor"
-            default 5
-                help
-                    Division factor 
-                        If freqrange = 0: 
-                            DIV = 1200/Freq_Mhz - 1
-                            DIV = 5 for 200 Mhz
-                            DIV = 7 for 150 Mhz
-                            DIV = 8 for 133 Mhz
-                            DIV = 11 for 100 Mhz
-                            DIV = 15 for 75 Mhz
-                        If freqrange = 1: 
-                            DIV = 600/Freq_Mhz – 1
-                            DIV = 11 for 50Mhz"
-
         config DTI_PVT_RST_CONF_VMRANGE
             int "Enter to select VM Range"
             range 0 1
@@ -72,19 +48,31 @@ menuconfig DTI_PVT
                     the voltage between 0 - 2 volts. And Enter 0 for VM range
                     of 0 - 1 volts.
 
-        config DTI_PVT_RST_CONF_VMCAL_OFFSET
-            hex "Enter the Voltage calibration offset in signed two's complement"
-            default 0x0
-                help
-                    Voltage Calibration Offset (in signed two's complement format). Used to 
-                    adjust VM Code depended on Silicon corner.
+    endmenu
 
-        config DTI_PVT_RST_CONF_TSCAL_OFFSET
-            hex "Enter the Thermal calibration offset in signed two's complement"
-            default 0x0
+    menu "VM and TS Process Corner Values"
+        depends on DTI_PVT
+
+        config DTI_PVT_VM_PROCESS_CORNER
+            int "Enter a value between 2,3 and 4"
+            default 4
                 help
-                    Thermal Calibration Offset (in signed two's complement format). Used to 
-                    adjust TS Code depended on Silicon corner.
+                  Voltage sensor LUT index based on process corner
+                    DTI_PVT_VM_FF_1_98 = 2
+                    DTI_PVT_VM_ss_1_62 = 3
+                    DTI_PVT_VM_TT_1_80 = 4      
+
+        config DTI_PVT_TS_PROCESS_CORNER
+            int "Enter a value between 1 to 6"
+            default 6
+                help
+                  Temperature sensor LUT index based on process corner
+                    DTI_PVT_TS_FF_1_62 = 1
+                    DTI_PVT_TS_FF_1_98 = 2
+                    DTI_PVT_TS_SS_1_62 = 3
+                    DTI_PVT_TS_SS_1_98 = 4
+                    DTI_PVT_TS_TT_1_62 = 5
+                    DTI_PVT_TS_TT_1_98 = 6       
 
     endmenu
 

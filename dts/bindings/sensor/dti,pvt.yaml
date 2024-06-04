@@ -13,4 +13,4 @@ properties:
     type: int
     required: true
     description:
-      Clock frequency of the ADC channel for PVT.
+      Clock frequency of the PVT Module.
