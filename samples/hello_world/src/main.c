@@ -14,7 +14,7 @@ int main(void)
 	int Cnt = 0;
 	uint8_t chip_id = 0, vendor_id = 0;
 	soc_get_id(&chip_id, &vendor_id);
-
+	struct sensor_value lvTemp = {0}, lvVolt = {0};
 	const struct device *pvt = DEVICE_DT_GET(DT_NODELABEL(pvt0));
 
 	if(pvt == NULL) {
@@ -26,6 +26,10 @@ int main(void)
 	if(!device_is_ready(pvt)) {
 		perror("Error with device initialization\n");
 		return -ENODEV;
+	} else {
+		sensor_channel_get(pvt, SENSOR_CHAN_DIE_TEMP, &lvTemp);
+		sensor_channel_get(pvt, SENSOR_CHAN_VOLTAGE, &lvVolt);
+		printf("Temperature Value %d Voltage %d\n", lvTemp.val1, lvVolt.val1);
 	}
 
 	while(true) {		
