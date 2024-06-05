@@ -174,21 +174,22 @@ struct result_status dti_pvt_poll_results(
 		had_error = (regs->stt & DTI_PVT_STT_THERMAL_SENSOR_MONITOR_ERROR) != 0;
 
 		if (is_done && !had_error) {
-		results->temperature = decode_pvt_temperature_code(
-			(regs->result & DTI_PVT_MASK_RESULT_TS_C) >>
-				DTI_PVT_OFFSET_RESULT_TS_C,
-			CONFIG_DTI_PVT_TS_PROCESS_CORNER);
-		op_result.data &= ~DTI_PVT_REQUEST_THERMAL_SENSOR_MONITOR;
+			results->temperature = decode_pvt_temperature_code(
+				(regs->result & DTI_PVT_MASK_RESULT_TS_C) >>
+					DTI_PVT_OFFSET_RESULT_TS_C,
+				CONFIG_DTI_PVT_TS_PROCESS_CORNER);
+			op_result.data &= ~DTI_PVT_REQUEST_THERMAL_SENSOR_MONITOR;
 
 		} else if (had_error) {
-		results->error_flags |= DTI_PVT_REQUEST_THERMAL_SENSOR_MONITOR;
-		results->temperature = 0xFFFF;
+			results->error_flags |= DTI_PVT_REQUEST_THERMAL_SENSOR_MONITOR;
+			results->temperature = 0xFFFF;
 		} else {
-		op_result.status = EWOULDBLOCK;
+			op_result.status = EWOULDBLOCK;
 		}
 	}
 
 	if (results->error_flags != 0) {
+		LOG_ERR("error_flags value:0x%08x\n", results->error_flags);
 		op_result.status = EINVAL;
 	}
 
