@@ -42,7 +42,6 @@ enum map_mask_control_irq_id {
   IRQ_ID_GPIO = 8,
   IRQ_ID_SYSTEM_DMA = 9,
   IRQ_ID_RESERVED9 = 10,
-  // Mailboxes
   IRQ_ID_AHB_MATRIX = 11,
   IRQ_ID_RESERVED11 = 12,
   IRQ_ID_RESERVED12 = 13,
