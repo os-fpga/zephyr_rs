@@ -52,7 +52,7 @@ enum dti_pvt_request {
 // conf fields:  PVT config register
 // ====================================
 
-// Resistor value adjustment for post silicon to calibrate to simualtion results
+// Resistor value adjustment for post silicon to calibrate to simulation results
 #define DTI_PVT_OFFSET_CONF_TRIM 0
 #define DTI_PVT_MASK_CONF_TRIM 0xF
 

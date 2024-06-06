@@ -16,7 +16,7 @@
 
 #include "dti_pvt.h"
 
-LOG_MODULE_REGISTER(DTI_PVT, CONFIG_DTI_PVT_LOG_LEVEL_ERR);
+LOG_MODULE_REGISTER(DTI_PVT, CONFIG_DTI_PVT_LOG_LEVEL);
 
 /// Contract: Any buffer based operation should return the amount of bytes
 /// written as it is possible that not all bytes can be pushed in a single
@@ -239,7 +239,7 @@ static int dti_pvt_read_results(
 	
 	if (res_status.status == EINVAL) {
 		LOG_ERR("Error Reading Results\n");
-		ret = ECANCELED;		
+		ret = EINVAL;		
 	}
 
 	return ret;
