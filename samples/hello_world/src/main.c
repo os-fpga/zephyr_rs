@@ -102,7 +102,7 @@ int main(void)
 	soc_get_id(&chip_id, &vendor_id);
 
 	const struct device *pvt = DEVICE_DT_GET(DT_NODELABEL(pvt0));
-	const struct device *flash = DEVICE_DT_GET(DT_NODELABEL(mx25u16));
+	const struct device *flash = DEVICE_DT_GET(DT_NODELABEL(m25p32));
 
 	if((pvt == NULL) || (!device_is_ready(pvt))) {
 		printf("%s pvt has status disabled or driver is not initialized...%s\n", ATTR_ERR, ATTR_RST);

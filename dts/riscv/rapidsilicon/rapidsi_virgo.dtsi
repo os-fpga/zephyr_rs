@@ -105,12 +105,6 @@
 				};
 			};
 		 };
-
-		 flash: flash@B0000000 {
-			 compatible = "micron,m25p32";
-			 reg = <0xB0000000 DT_SIZE_M(2)>;
-			 status = "disabled";
-		 };
  
 		 uart0: serial@a0420020 {
 			 compatible = "ns16550";
