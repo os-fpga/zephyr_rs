@@ -89,8 +89,8 @@ LOG_MODULE_REGISTER(wdt_andes);
 #define WDOGCFG_PERIOD_MAX		BIT(14)
 #define EXT_CLOCK_FREQ			BIT(15)
 
-static const struct device *const syscon_dev =
-				DEVICE_DT_GET(DT_NODELABEL(syscon));
+// static const struct device *const syscon_dev =
+// 				DEVICE_DT_GET(DT_NODELABEL(syscon));
 static const struct device *const pit_counter_dev =
 				DEVICE_DT_GET(DT_NODELABEL(pit0));
 
@@ -116,6 +116,8 @@ static void wdt_counter_cb(const struct device *counter_dev, uint8_t chan_id,
 	struct wdt_atcwdt200_dev_data *wdt_data = dev->data;
 	uint32_t wdt_addr = ((const struct wdt_atcwdt200_config *)(dev->config))->base;
 	k_spinlock_key_t key;
+
+	printf("%s channel_id:%d counter:%d\n", __func__, chan_id, counter);
 
 	key = k_spin_lock(&wdt_data->lock);
 
@@ -151,7 +153,7 @@ static void wdt_atcwdt200_set_max_timeout(const struct device *dev)
 	reg = WDT_CTRL_RSTTIME_POW_2_14;
 
 	sys_write32(WDT_WREN_NUM, WDT_WREN(wdt_addr));
-	sys_write32(reg, WDT_CTRL(wdt_addr));
+	sys_write32(reg, WDT_CTRL(wdt_addr));	
 
 	data->timeout_valid = true;
 
@@ -197,7 +199,7 @@ static int wdt_atcwdt200_setup(const struct device *dev, uint8_t options)
 	key = k_spin_lock(&data->lock);
 
 	reg = sys_read32(WDT_CTRL(wdt_addr));
-	reg |= (WDT_CTRL_RSTEN | WDT_CTRL_EN);
+	reg |= (WDT_CTRL_EN | WDT_CTRL_APBCLK | WDT_CTRL_RSTEN | WDT_CTRL_INTEN);
 
 	if ((options & WDT_OPT_PAUSE_HALTED_BY_DBG) ==
 			WDT_OPT_PAUSE_HALTED_BY_DBG) {
@@ -218,6 +220,7 @@ static int wdt_atcwdt200_setup(const struct device *dev, uint8_t options)
 
 out:
 	k_spin_unlock(&data->lock, key);
+	LOG_INF("%s WDT_CTRL:0x%08x\n",__func__, sys_read32(WDT_CTRL(wdt_addr)));
 	return ret;
 }
 
@@ -298,6 +301,7 @@ static int wdt_atcwdt200_install_timeout(const struct device *dev,
 	sys_write32(reg, WDT_CTRL(wdt_addr));
 
 	k_spin_unlock(&data->lock, key);
+	LOG_INF("%s WDT_CTRL:0x%08x\n",__func__, sys_read32(WDT_CTRL(wdt_addr)));
 	return 0;
 }
 
@@ -330,19 +334,19 @@ static int wdt_atcwdt200_init(const struct device *dev)
 
 	counter_start(pit_counter_dev);
 
-	ret = syscon_write_reg(syscon_dev, SMU_RESET_REGLO,
-				((uint32_t)((unsigned long)
-					Z_MEM_PHYS_ADDR(CONFIG_KERNEL_ENTRY))));
-	if (ret < 0) {
-		return -EINVAL;
-	}
+	// ret = syscon_write_reg(syscon_dev, SMU_RESET_REGLO,
+	// 			((uint32_t)((unsigned long)
+	// 				Z_MEM_PHYS_ADDR(CONFIG_KERNEL_ENTRY))));
+	// if (ret < 0) {
+	// 	return -EINVAL;
+	// }
 
-	ret = syscon_write_reg(syscon_dev, SMU_RESET_REGHI,
-				((uint32_t)((uint64_t)((unsigned long)
-						Z_MEM_PHYS_ADDR(CONFIG_KERNEL_ENTRY)) >> 32)));
-	if (ret < 0) {
-		return -EINVAL;
-	}
+	// ret = syscon_write_reg(syscon_dev, SMU_RESET_REGHI,
+	// 			((uint32_t)((uint64_t)((unsigned long)
+	// 					Z_MEM_PHYS_ADDR(CONFIG_KERNEL_ENTRY)) >> 32)));
+	// if (ret < 0) {
+	// 	return -EINVAL;
+	// }
 
 #ifdef CONFIG_WDT_DISABLE_AT_BOOT
 	wdt_atcwdt200_disable(dev);

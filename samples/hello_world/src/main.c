@@ -5,6 +5,7 @@
  */
 
 #include <zephyr/kernel.h>
+#include <zephyr/drivers/watchdog.h>
 #include <zephyr/drivers/counter.h>
 #include <zephyr/drivers/sensor.h>
 #include <zephyr/drivers/flash.h>
@@ -240,13 +241,13 @@ void CounterTest(const struct device *pit)
 	lvCntTopCfg.ticks = 6000;
 
 	int lvErrorCode = 0;
-	/*	
+	
 	lvErrorCode = counter_set_channel_alarm(pit, 0, &lvCntAlarmCfg);
 	if(lvErrorCode < 0) {
 		printf("%s%s(%d) counter Alarm set error code:%d %s\n", \
 		ATTR_ERR,__func__,__LINE__,lvErrorCode,ATTR_RST);
 	} 
-	*/
+	/*
 	lvErrorCode = counter_set_top_value(pit, &lvCntTopCfg);
 	if(lvErrorCode < 0) {
 		printf("%s%s(%d) counter setting top error code:%d %s\n", \
@@ -258,6 +259,32 @@ void CounterTest(const struct device *pit)
 			ATTR_ERR,__func__,__LINE__,lvErrorCode,ATTR_RST);
 		}
 	}
+	*/
+}
+
+void WDTCallBack(const struct device *dev, int channel_id)
+{
+	printf("%s %s channel_id:%d %s\n", ATTR_INF, __func__, channel_id, ATTR_RST);
+}
+
+void WatchDogTest(const struct device *wdt)
+{
+	struct wdt_timeout_cfg lvWDTConfig = {
+		.window.min = 0,
+		.window.max = 500,
+		.callback = WDTCallBack,
+		.flags = WDT_FLAG_RESET_SOC
+	};
+	printf("%s %s\n", ATTR_RST, __func__);
+	int errorcode = wdt_install_timeout(wdt, &lvWDTConfig);
+	if(errorcode != 0) {
+		printf("%s wdt_install_timeout error code:%d %s\n", ATTR_ERR, errorcode, ATTR_RST);
+	} else {
+		errorcode = wdt_setup(wdt, 0);
+		if(errorcode != 0) {
+			printf("%s wdt_setup error code:%d %s\n", ATTR_ERR, errorcode, ATTR_RST);
+		}	
+	}	
 }
 
 int main(void)
@@ -280,6 +307,7 @@ int main(void)
 	const struct device *flash = DEVICE_DT_GET(DT_NODELABEL(m25p32));
 	const struct device *dma = DEVICE_DT_GET(DT_NODELABEL(dma0));
 	const struct device *pit = DEVICE_DT_GET(DT_NODELABEL(pit0));
+	const struct device *wdt = DEVICE_DT_GET(DT_NODELABEL(bcpu_wdt));
 
 	if((pvt == NULL) || (!device_is_ready(pvt))) {
 		printf("%s pvt has status disabled or driver is not initialized...%s\n", ATTR_ERR, ATTR_RST);
@@ -309,10 +337,16 @@ int main(void)
 	}
 
 	if((pit == NULL) || !device_is_ready(pit)) {
-		printf("%s flash has status disabled or driver is not initialized...%s\n", ATTR_ERR,ATTR_RST);
+		printf("%s pit has status disabled or driver is not initialized...%s\n", ATTR_ERR,ATTR_RST);
 	} else {
 		CounterTest(pit);
 	}
+
+	if((wdt == NULL) || !device_is_ready(wdt)) {
+		printf("%s pit has status disabled or driver is not initialized...%s\n", ATTR_ERR,ATTR_RST);
+	} else {
+		WatchDogTest(wdt);
+	}	
 
 	while(true) {		
 		printf(

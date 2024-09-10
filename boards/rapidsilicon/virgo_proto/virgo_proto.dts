@@ -50,6 +50,10 @@
 	status = "okay";
  };
 
+ &bcpu_wdt {
+	status = "okay";
+ };
+
  &spi0 {
 	status = "okay";
 	clock-frequency = <26666667>;
