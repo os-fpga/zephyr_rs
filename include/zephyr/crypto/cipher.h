@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2016 Intel Corporation.
+ *               2024 Rapid Silicon.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -24,6 +25,13 @@
  * @{
  */
 
+/**
+ * Encryption Key Source
+ */
+enum cipher_key_source {
+	CRYPTO_KEY_SW = 0,
+	CRYPTO_KEY_OTP = 1
+};
 
 /** Cipher Algorithm */
 enum cipher_algo {
@@ -94,6 +102,14 @@ struct ctr_params {
 	 * such that ivlen + ctr_len = keylen
 	 */
 	uint32_t ctr_len;
+
+	/**
+	 * Check whether we want to readback the ctr (iv)
+	 * for the cases where we might be doing chunk wise
+	 * decryption and each chunk could be encrypted with
+	 * a separate IV for strengthening the security.
+	 */
+	bool readback_ctr;
 };
 
 struct gcm_params {
@@ -124,6 +140,12 @@ struct cipher_ctx {
 		 */
 		void *handle;
 	} key;
+
+	/* 
+	 * This indicates if the encryption key will be provided by
+	 * software or it has to be fetched from secure (OTP) memory.
+	 */
+	enum cipher_key_source key_source;
 
 	/** The device driver instance this crypto context relates to. Will be
 	 * populated by the begin_session() API.
@@ -191,6 +213,11 @@ struct cipher_pkt {
 	 */
 	uint8_t *out_buf;
 
+	/**
+	 * Should the destination address be auto incrementing
+	 */
+	bool auto_increment;
+
 	/** Size of the out_buf area allocated by the application. Drivers
 	 * should not write past the size of output buffer.
 	 */
@@ -200,6 +227,12 @@ struct cipher_pkt {
 	 * holds the size of the actual result.
 	 */
 	int out_len;
+
+	/** 
+	 * Bytes previously operated upon. This information is useful
+	 * if the decryption is performed in chunks.
+	 * */
+	uint32_t  prev_len;
 
 	/** Context this packet relates to. This can be useful to get the
 	 * session details, especially for async ops. Will be populated by the
