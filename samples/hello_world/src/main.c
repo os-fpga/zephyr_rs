@@ -924,7 +924,10 @@ int main(void)
 {
 	int Cnt = 0;
 	uint8_t chip_id = 0, vendor_id = 0;
-
+	while (true) {
+		printf("%s%d - %s [CHIP_ID:0x%02x VENDOR_ID:0x%02x] Build[Date:%s Time:%s]\r",ATTR_RST, Cnt++, CONFIG_BOARD_TARGET, chip_id, vendor_id, __DATE__,__TIME__);
+		k_msleep(1000);
+	}
 	#if DT_HAS_RAPIDSI_SCU_ENABLED
 		printf("%s SPI_(%d)_IRQ_Reg_Val:[0x%08x]; DMA_(%d)_IRQ_Reg_Val:[0x%08x]\n", ATTR_RST,
 			IRQ_ID_SPI, scu_get_irq_reg_val(IRQ_ID_SPI), IRQ_ID_SYSTEM_DMA,
@@ -1045,9 +1048,7 @@ int main(void)
 	#endif
 
 	while (true) {
-		printf("%s%d - %s [CHIP_ID:0x%02x VENDOR_ID:0x%02x] Build[Date:%s Time:%s]\r",
-		       ATTR_RST, Cnt++, CONFIG_BOARD_TARGET, chip_id, vendor_id, __DATE__,
-		       __TIME__);
+		printf("%s%d - %s [CHIP_ID:0x%02x VENDOR_ID:0x%02x] Build[Date:%s Time:%s]\r",ATTR_RST, Cnt++, CONFIG_BOARD_TARGET, chip_id, vendor_id, __DATE__,__TIME__);
 		k_msleep(1000);
 	}
 
