@@ -925,7 +925,7 @@ int main(void)
 	int Cnt = 0;
 	uint8_t chip_id = 0, vendor_id = 0;
 	while (true) {
-		printf("%s%d - %s [CHIP_ID:0x%02x VENDOR_ID:0x%02x] Build[Date:%s Time:%s]\r",ATTR_RST, Cnt++, CONFIG_BOARD_TARGET, chip_id, vendor_id, __DATE__,__TIME__);
+		printf("%s%d - %s (CHIP_ID:0x%02x VENDOR_ID:0x%02x) Build Date:%s Time:%s\r",ATTR_RST, Cnt++, CONFIG_BOARD_TARGET, chip_id, vendor_id, __DATE__,__TIME__);
 		k_msleep(1000);
 	}
 	#if DT_HAS_RAPIDSI_SCU_ENABLED

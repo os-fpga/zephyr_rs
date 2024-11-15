@@ -5,8 +5,8 @@ config SOC_SERIES_VIRGO
 	select RISCV
 	select RISCV_PRIVILEGED
 	select RISCV_HAS_CLIC
-	# select RISCV_VECTORED_MODE
-	# select GEN_IRQ_VECTOR_TABLE
+	#select RISCV_VECTORED_MODE
+	#select GEN_IRQ_VECTOR_TABLE
 
 config SOC_VIRGO
 	select ATOMIC_OPERATIONS_BUILTIN
@@ -21,13 +21,13 @@ config SOC_VIRGO
 
 if SOC_SERIES_VIRGO
 
-# if GEN_IRQ_VECTOR_TABLE
+if GEN_IRQ_VECTOR_TABLE
 
-# 	choice IRQ_VECTOR_TABLE_TYPE
-# 		default IRQ_VECTOR_TABLE_JUMP_BY_ADDRESS
-# 	endchoice
+	choice IRQ_VECTOR_TABLE_TYPE
+		default IRQ_VECTOR_TABLE_JUMP_BY_ADDRESS
+	endchoice
 
-# endif
+endif
 
 config SOC_ANDES_V5_EXECIT
 	bool "Andes V5 EXEC.IT extension"
