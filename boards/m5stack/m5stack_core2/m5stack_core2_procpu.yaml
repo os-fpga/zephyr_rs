@@ -1,5 +1,5 @@
 identifier: m5stack_core2/esp32/procpu
-name: M5Stack Core2
+name: M5Stack Core2 PROCPU
 type: mcu
 arch: xtensa
 toolchain:
@@ -13,8 +13,4 @@ supported:
   - uart
   - pinmux
   - nvs
-testing:
-  ignore_tags:
-    - net
-    - bluetooth
 vendor: m5stack

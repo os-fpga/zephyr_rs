@@ -44,7 +44,7 @@ size_t usbd_class_desc_len(struct usbd_class_data *const c_data,
 }
 
 struct usbd_class_node *
-usbd_class_get_by_config(struct usbd_contex *const uds_ctx,
+usbd_class_get_by_config(struct usbd_context *const uds_ctx,
 			 const enum usbd_speed speed,
 			 const uint8_t cnum,
 			 const uint8_t inum)
@@ -67,7 +67,7 @@ usbd_class_get_by_config(struct usbd_contex *const uds_ctx,
 }
 
 struct usbd_class_node *
-usbd_class_get_by_iface(struct usbd_contex *const uds_ctx,
+usbd_class_get_by_iface(struct usbd_context *const uds_ctx,
 			const uint8_t inum)
 {
 	struct usbd_class_node *c_nd;
@@ -87,7 +87,7 @@ usbd_class_get_by_iface(struct usbd_contex *const uds_ctx,
 	return NULL;
 }
 
-static bool xfer_owner_exist(struct usbd_contex *const uds_ctx,
+static bool xfer_owner_exist(struct usbd_context *const uds_ctx,
 			     struct usbd_config_node *const cfg_nd,
 			     struct net_buf *const buf)
 {
@@ -114,7 +114,7 @@ static bool xfer_owner_exist(struct usbd_contex *const uds_ctx,
 	return false;
 }
 
-int usbd_class_handle_xfer(struct usbd_contex *const uds_ctx,
+int usbd_class_handle_xfer(struct usbd_context *const uds_ctx,
 			   struct net_buf *const buf,
 			   const int err)
 {
@@ -137,7 +137,7 @@ int usbd_class_handle_xfer(struct usbd_contex *const uds_ctx,
 }
 
 struct usbd_class_node *
-usbd_class_get_by_ep(struct usbd_contex *const uds_ctx,
+usbd_class_get_by_ep(struct usbd_context *const uds_ctx,
 		     const uint8_t ep)
 {
 	struct usbd_class_node *c_nd;
@@ -175,7 +175,7 @@ usbd_class_get_by_ep(struct usbd_contex *const uds_ctx,
 }
 
 struct usbd_class_node *
-usbd_class_get_by_req(struct usbd_contex *const uds_ctx,
+usbd_class_get_by_req(struct usbd_context *const uds_ctx,
 		      const uint8_t request)
 {
 	struct usbd_config_node *cfg_nd;
@@ -215,7 +215,7 @@ usbd_class_node_get(const char *name, const enum usbd_speed speed)
 				return c_nd;
 			}
 		}
-	} else if (speed == USBD_SPEED_HS) {
+	} else if (USBD_SUPPORTS_HIGH_SPEED && speed == USBD_SPEED_HS) {
 		STRUCT_SECTION_FOREACH_ALTERNATE(usbd_class_hs,
 						 usbd_class_node, c_nd) {
 			if (strcmp(name, c_nd->c_data->name) == 0) {
@@ -229,7 +229,7 @@ usbd_class_node_get(const char *name, const enum usbd_speed speed)
 	return NULL;
 }
 
-static int usbd_class_append(struct usbd_contex *const uds_ctx,
+static int usbd_class_append(struct usbd_context *const uds_ctx,
 			     struct usbd_class_node *const c_nd,
 			     const enum usbd_speed speed,
 			     const uint8_t cfg)
@@ -246,7 +246,7 @@ static int usbd_class_append(struct usbd_contex *const uds_ctx,
 	return 0;
 }
 
-static int usbd_class_remove(struct usbd_contex *const uds_ctx,
+static int usbd_class_remove(struct usbd_context *const uds_ctx,
 			     struct usbd_class_node *const c_nd,
 			     const enum usbd_speed speed,
 			     const uint8_t cfg)
@@ -265,7 +265,7 @@ static int usbd_class_remove(struct usbd_contex *const uds_ctx,
 	return 0;
 }
 
-int usbd_class_remove_all(struct usbd_contex *const uds_ctx,
+int usbd_class_remove_all(struct usbd_context *const uds_ctx,
 			  const enum usbd_speed speed,
 			  const uint8_t cfg)
 {
@@ -282,6 +282,7 @@ int usbd_class_remove_all(struct usbd_contex *const uds_ctx,
 		c_nd = CONTAINER_OF(node, struct usbd_class_node, node);
 		atomic_clear_bit(&c_nd->state, USBD_CCTX_REGISTERED);
 		usbd_class_shutdown(c_nd->c_data);
+		c_nd->c_data->uds_ctx = NULL;
 		LOG_DBG("Remove class node %p from configuration %u", c_nd, cfg);
 	}
 
@@ -292,7 +293,7 @@ int usbd_class_remove_all(struct usbd_contex *const uds_ctx,
  * All the functions below are part of public USB device support API.
  */
 
-int usbd_register_class(struct usbd_contex *const uds_ctx,
+int usbd_register_class(struct usbd_context *const uds_ctx,
 			const char *name,
 			const enum usbd_speed speed, const uint8_t cfg)
 {
@@ -340,7 +341,64 @@ register_class_error:
 	return ret;
 }
 
-int usbd_unregister_class(struct usbd_contex *const uds_ctx,
+static bool is_blocklisted(const struct usbd_class_node *const c_nd,
+			   const char *const list[])
+{
+	for (int i = 0; list[i] != NULL; i++) {
+		if (strcmp(c_nd->c_data->name, list[i]) == 0) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+int usbd_register_all_classes(struct usbd_context *const uds_ctx,
+			      const enum usbd_speed speed, const uint8_t cfg,
+			      const char *const blocklist[])
+{
+	int ret;
+
+	if (USBD_SUPPORTS_HIGH_SPEED && speed == USBD_SPEED_HS) {
+		STRUCT_SECTION_FOREACH_ALTERNATE(usbd_class_hs, usbd_class_node, c_nd) {
+			if (blocklist != NULL && is_blocklisted(c_nd, blocklist)) {
+				continue;
+			}
+
+			ret = usbd_register_class(uds_ctx, c_nd->c_data->name,
+						  speed, cfg);
+			if (ret) {
+				LOG_ERR("Failed to register %s to HS configuration %u",
+					c_nd->c_data->name, cfg);
+				return ret;
+			}
+		}
+
+		return 0;
+	}
+
+	if (speed == USBD_SPEED_FS) {
+		STRUCT_SECTION_FOREACH_ALTERNATE(usbd_class_fs, usbd_class_node, c_nd) {
+			if (blocklist != NULL && is_blocklisted(c_nd, blocklist)) {
+				continue;
+			}
+
+			ret = usbd_register_class(uds_ctx, c_nd->c_data->name,
+						  speed, cfg);
+			if (ret) {
+				LOG_ERR("Failed to register %s to FS configuration %u",
+					c_nd->c_data->name, cfg);
+				return ret;
+			}
+		}
+
+		return 0;
+	}
+
+	return -ENOTSUP;
+}
+
+int usbd_unregister_class(struct usbd_context *const uds_ctx,
 			  const char *name,
 			  const enum usbd_speed speed, const uint8_t cfg)
 {
@@ -373,8 +431,8 @@ int usbd_unregister_class(struct usbd_contex *const uds_ctx,
 	/* TODO: The use of atomic here does not make this code thread safe.
 	 * The atomic should be changed to something else.
 	 */
-	if (speed == USBD_SPEED_HS) {
-		STRUCT_SECTION_FOREACH_ALTERNATE(usbd_class_fs,
+	if (USBD_SUPPORTS_HIGH_SPEED && speed == USBD_SPEED_HS) {
+		STRUCT_SECTION_FOREACH_ALTERNATE(usbd_class_hs,
 						 usbd_class_node, i) {
 			if ((i->c_data == c_nd->c_data) &&
 			    atomic_test_bit(&i->state, USBD_CCTX_REGISTERED)) {
@@ -383,7 +441,7 @@ int usbd_unregister_class(struct usbd_contex *const uds_ctx,
 			}
 		}
 	} else {
-		STRUCT_SECTION_FOREACH_ALTERNATE(usbd_class_hs,
+		STRUCT_SECTION_FOREACH_ALTERNATE(usbd_class_fs,
 						 usbd_class_node, i) {
 			if ((i->c_data == c_nd->c_data) &&
 			    atomic_test_bit(&i->state, USBD_CCTX_REGISTERED)) {
@@ -406,4 +464,40 @@ int usbd_unregister_class(struct usbd_contex *const uds_ctx,
 unregister_class_error:
 	usbd_device_unlock(uds_ctx);
 	return ret;
+}
+
+int usbd_unregister_all_classes(struct usbd_context *const uds_ctx,
+				const enum usbd_speed speed, const uint8_t cfg)
+{
+	int ret;
+
+	if (USBD_SUPPORTS_HIGH_SPEED && speed == USBD_SPEED_HS) {
+		STRUCT_SECTION_FOREACH_ALTERNATE(usbd_class_hs, usbd_class_node, c_nd) {
+			ret = usbd_unregister_class(uds_ctx, c_nd->c_data->name,
+						    speed, cfg);
+			if (ret) {
+				LOG_ERR("Failed to unregister %s to HS configuration %u",
+					c_nd->c_data->name, cfg);
+				return ret;
+			}
+		}
+
+		return 0;
+	}
+
+	if (speed == USBD_SPEED_FS) {
+		STRUCT_SECTION_FOREACH_ALTERNATE(usbd_class_fs, usbd_class_node, c_nd) {
+			ret = usbd_unregister_class(uds_ctx, c_nd->c_data->name,
+						    speed, cfg);
+			if (ret) {
+				LOG_ERR("Failed to unregister %s to FS configuration %u",
+					c_nd->c_data->name, cfg);
+				return ret;
+			}
+		}
+
+		return 0;
+	}
+
+	return -ENOTSUP;
 }

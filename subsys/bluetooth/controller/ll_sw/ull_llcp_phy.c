@@ -190,7 +190,7 @@ static void pu_reset_timing_restrict(struct ll_conn *conn)
 }
 
 #if defined(CONFIG_BT_PERIPHERAL)
-static inline bool phy_valid(uint8_t phy)
+static inline bool phy_validation_check_phy_ind(uint8_t phy)
 {
 	/* This is equivalent to:
 	 * maximum one bit set, and no bit set is rfu's
@@ -203,7 +203,8 @@ static uint8_t pu_check_update_ind(struct ll_conn *conn, struct proc_ctx *ctx)
 	uint8_t ret = 0;
 
 	/* Check if either phy selected is invalid */
-	if (!phy_valid(ctx->data.pu.c_to_p_phy) || !phy_valid(ctx->data.pu.p_to_c_phy)) {
+	if (!phy_validation_check_phy_ind(ctx->data.pu.c_to_p_phy) ||
+	    !phy_validation_check_phy_ind(ctx->data.pu.p_to_c_phy)) {
 		/* more than one or any rfu bit selected in either phy */
 		ctx->data.pu.error = BT_HCI_ERR_UNSUPP_FEATURE_PARAM_VAL;
 		ret = 1;
@@ -433,6 +434,7 @@ static void pu_ntf(struct ll_conn *conn, struct proc_ctx *ctx)
 
 	/* Piggy-back on stored RX node */
 	ntf = ctx->node_ref.rx;
+	ctx->node_ref.rx = NULL;
 	LL_ASSERT(ntf);
 
 	if (ctx->data.pu.ntf_pu) {
@@ -449,15 +451,9 @@ static void pu_ntf(struct ll_conn *conn, struct proc_ctx *ctx)
 	}
 
 	/* Enqueue notification towards LL */
-#if defined(CONFIG_BT_CTLR_DATA_LENGTH)
-	/* only 'put' as the 'sched' is handled when handling DLE ntf */
-	ll_rx_put(ntf->hdr.link, ntf);
-#else
 	ll_rx_put_sched(ntf->hdr.link, ntf);
-#endif /* CONFIG_BT_CTLR_DATA_LENGTH */
 
 	ctx->data.pu.ntf_pu = 0;
-	ctx->node_ref.rx = NULL;
 }
 
 #if defined(CONFIG_BT_CTLR_DATA_LENGTH)

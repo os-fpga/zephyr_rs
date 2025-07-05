@@ -1,5 +1,5 @@
 identifier: esp32_ethernet_kit/esp32/procpu
-name: ESP32 ETHERNET KIT
+name: ESP32 ETHERNET KIT PROCPU
 type: mcu
 arch: xtensa
 toolchain:
@@ -10,8 +10,5 @@ supported:
   - uart
   - nvs
   - pwm
-testing:
-  ignore_tags:
-    - net
-    - bluetooth
+  - i2s
 vendor: espressif

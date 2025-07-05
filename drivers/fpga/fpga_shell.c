@@ -6,14 +6,14 @@
 
 #include <zephyr/sys/printk.h>
 #include <zephyr/shell/shell.h>
-#include <version.h>
+#include <zephyr/version.h>
 #include <stdlib.h>
 #include <zephyr/drivers/fpga.h>
 
 static int parse_common_args(const struct shell *sh, char **argv,
 			     const struct device **dev)
 {
-	*dev = device_get_binding(argv[1]);
+	*dev = shell_device_get_binding(argv[1]);
 	if (!*dev) {
 		shell_error(sh, "FPGA device %s not found", argv[1]);
 		return -ENODEV;

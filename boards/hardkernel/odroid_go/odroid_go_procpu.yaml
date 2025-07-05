@@ -1,5 +1,5 @@
 identifier: odroid_go/esp32/procpu
-name: ODROID-GO
+name: ODROID-GO PROCPU
 type: mcu
 arch: xtensa
 toolchain:
@@ -11,8 +11,4 @@ supported:
   - watchdog
   - uart
   - nvs
-testing:
-  ignore_tags:
-    - net
-    - bluetooth
 vendor: hardkernel

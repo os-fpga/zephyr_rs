@@ -7,6 +7,7 @@
 
 #include <espressif/esp32/esp32_wrover_e_n16r4.dtsi>
 #include "odroid_go-pinctrl.dtsi"
+#include <espressif/partitions_0x1000_amp.dtsi>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 
 / {
@@ -14,12 +15,13 @@
 	compatible = "hardkernel,odroid_go", "espressif,esp32";
 
 	chosen {
-		zephyr,sram = &sram0;
+		zephyr,sram = &sram1;
 		zephyr,console = &uart0;
 		zephyr,shell-uart = &uart0;
 		zephyr,flash = &flash0;
 		zephyr,code-partition = &slot0_partition;
 		zephyr,display = &ili9341;
+		zephyr,bt-hci = &esp32_bt_hci;
 	};
 
 	leds {
@@ -76,6 +78,7 @@
 		led0 = &blue_led;
 		sw0 = &menu_button;
 		watchdog0 = &wdt0;
+		sdhc0 = &sd0;
 	};
 
 	mipi_dbi {
@@ -96,14 +99,6 @@
 			height = <240>;
 		};
 	};
-};
-
-&cpu0 {
-	clock-frequency = <ESP32_CLK_CPU_240M>;
-};
-
-&cpu1 {
-	clock-frequency = <ESP32_CLK_CPU_240M>;
 };
 
 &uart0 {
@@ -143,12 +138,13 @@
 	pinctrl-0 = <&spim3_default>;
 	pinctrl-names = "default";
 
-	sdhc0: sdhc@1 {
+	sd0: sd@1 {
 		compatible = "zephyr,sdhc-spi-slot";
 		reg = <1>;
 		status = "okay";
 		mmc {
 			compatible = "zephyr,sdmmc-disk";
+			disk-name = "SD";
 			status = "okay";
 		};
 		spi-max-frequency = <20000000>;
@@ -175,41 +171,10 @@
 	status = "okay";
 };
 
-&flash0 {
+&esp32_bt_hci {
 	status = "okay";
-	partitions {
-		compatible = "fixed-partitions";
-		#address-cells = <1>;
-		#size-cells = <1>;
+};
 
-		/* Reserve 60kB for the bootloader */
-		boot_partition: partition@1000 {
-			label = "mcuboot";
-			reg = <0x00001000 0x0000F000>;
-			read-only;
-		};
-
-		/* Reserve 1024kB for the application in slot 0 */
-		slot0_partition: partition@10000 {
-			label = "image-0";
-			reg = <0x00010000 0x00100000>;
-		};
-
-		/* Reserve 1024kB for the application in slot 1 */
-		slot1_partition: partition@110000 {
-			label = "image-1";
-			reg = <0x00110000 0x00100000>;
-		};
-
-		/* Reserve 256kB for the scratch partition */
-		scratch_partition: partition@210000 {
-			   label = "image-scratch";
-			   reg = <0x00210000 0x00040000>;
-		};
-
-		storage_partition: partition@250000 {
-			label = "storage";
-			reg = <0x00250000 0x00006000>;
-		};
-	};
+&wifi {
+	status = "okay";
 };

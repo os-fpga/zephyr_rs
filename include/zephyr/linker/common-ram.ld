@@ -1,4 +1,5 @@
 /* SPDX-License-Identifier: Apache-2.0 */
+/* Please keep in sync with cmake/linker_script/common/common-ram.cmake */
 
 #include <zephyr/linker/iterable_sections.h>
 
@@ -11,6 +12,10 @@
 	ITERABLE_SECTION_RAM(eth_bridge, Z_LINK_ITERABLE_SUBALIGN)
 #endif
 #endif /* NETWORKING */
+
+#ifdef CONFIG_ARM_SCMI
+ITERABLE_SECTION_RAM(scmi_protocol, Z_LINK_ITERABLE_SUBALIGN)
+#endif /* CONFIG_ARM_SCMI */
 
 #if defined(CONFIG_GEN_SW_ISR_TABLE) && defined(CONFIG_DYNAMIC_INTERRUPTS)
 	SECTION_DATA_PROLOGUE(sw_isr_table,,)
@@ -36,14 +41,16 @@
 
         SECTION_DATA_PROLOGUE(device_states,,)
         {
+		. = ALIGN(CONFIG_ARCH_DEVICE_STATE_ALIGN);
 		/* Device states used by the device objects. */
-                __device_states_start = .;
+                PLACE_SYMBOL_HERE(__device_states_start);
 		KEEP(*(".z_devstate"));
 		KEEP(*(".z_devstate.*"));
-                __device_states_end = .;
+                PLACE_SYMBOL_HERE(__device_states_end);
+		. = ALIGN(CONFIG_ARCH_DEVICE_STATE_ALIGN);
         } GROUP_DATA_LINK_IN(RAMABLE_REGION, ROMABLE_REGION)
 
-#if CONFIG_PM_DEVICE
+#ifdef CONFIG_PM_DEVICE
 	ITERABLE_SECTION_RAM(pm_device_slots, Z_LINK_ITERABLE_SUBALIGN)
 #endif
 
@@ -66,7 +73,7 @@
 	 * These two symbols only used by gen_kobject_list.py
 	 */
 
-	_static_kernel_objects_begin = .;
+	PLACE_SYMBOL_HERE(_static_kernel_objects_begin);
 #endif /* CONFIG_USERSPACE */
 
 	ITERABLE_SECTION_RAM_GC_ALLOWED(k_timer, Z_LINK_ITERABLE_SUBALIGN)
@@ -95,17 +102,13 @@
 	ITERABLE_SECTION_RAM(pcie_dev, Z_LINK_ITERABLE_SUBALIGN)
 #endif /* PCIE */
 
-#if defined(CONFIG_UART_MUX)
-	ITERABLE_SECTION_RAM(uart_mux, Z_LINK_ITERABLE_SUBALIGN)
-#endif
-
 #if defined(CONFIG_USB_DEVICE_STACK)
 	SECTION_DATA_PROLOGUE(usb_descriptor,,SUBALIGN(1))
 	{
-		__usb_descriptor_start = .;
+		PLACE_SYMBOL_HERE(__usb_descriptor_start);
 		*(".usb.descriptor")
 		KEEP(*(SORT_BY_NAME(".usb.descriptor*")))
-		__usb_descriptor_end = .;
+		PLACE_SYMBOL_HERE(__usb_descriptor_end);
 	} GROUP_DATA_LINK_IN(RAMABLE_REGION, ROMABLE_REGION)
 
 	ITERABLE_SECTION_RAM(usb_cfg_data, Z_LINK_ITERABLE_SUBALIGN)
@@ -114,10 +117,10 @@
 #if defined(CONFIG_USB_DEVICE_BOS)
 	SECTION_DATA_PROLOGUE(usb_bos_desc,,SUBALIGN(1))
 	{
-		__usb_bos_desc_start = .;
+		PLACE_SYMBOL_HERE(__usb_bos_desc_start);
 		*(".usb.bos_desc")
 		KEEP(*(SORT_BY_NAME(".usb.bos_desc*")))
-		__usb_bos_desc_end = .;
+		PLACE_SYMBOL_HERE(__usb_bos_desc_end);
 	} GROUP_DATA_LINK_IN(RAMABLE_REGION, ROMABLE_REGION)
 #endif /* CONFIG_USB_DEVICE_BOS */
 
@@ -145,5 +148,5 @@
 #endif
 
 #ifdef CONFIG_USERSPACE
-	_static_kernel_objects_end = .;
+	PLACE_SYMBOL_HERE(_static_kernel_objects_end);
 #endif

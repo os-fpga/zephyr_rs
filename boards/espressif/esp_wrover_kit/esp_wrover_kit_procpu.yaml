@@ -1,5 +1,5 @@
 identifier: esp_wrover_kit/esp32/procpu
-name: ESP WROVER KIT
+name: ESP WROVER KIT PROCPU
 type: mcu
 arch: xtensa
 toolchain:
@@ -13,11 +13,8 @@ supported:
   - uart
   - nvs
   - pwm
+  - sdhc
   - spi
   - counter
   - entropy
-testing:
-  ignore_tags:
-    - net
-    - bluetooth
 vendor: espressif
